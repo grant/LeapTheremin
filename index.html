@@ -1,63 +1,70 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Document</title>
-	<style>
-		* {cursor: none;}
-	</style>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    * {cursor: none;}
+  </style>
 </head>
 <body>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script type="text/javascript">
-	$(function() {
-		var context = new webkitAudioContext(),
-        oscillator = context.createOscillator();
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    var context;
+    if (typeof AudioContext !== "undefined") {
+      context = new AudioContext();
+    } else if (typeof webkitAudioContext !== "undefined") {
+      context = new webkitAudioContext();
+    } else {
+      throw new Error('AudioContext not supported. :(');
+    }
+    var oscillator = context.createOscillator();
 
-        oscillator.connect(context.destination); // Connect to speakers
-	    oscillator.start(0); // Start generating sound immediately
+    oscillator.connect(context.destination); // Connect to speakers
+    oscillator.start(0); // Start generating sound immediately
 
-	    var windowHeight = window.innerHeight;
-	    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var windowWidth = window.innerWidth;
 
-	    var baseFrequency;
-	    var timeFrequency;
+    var baseFrequency;
+    var timeFrequency;
 
-    	var yPercent;
-    	var xPercent;
+    var yPercent;
+    var xPercent;
 
-    	var speed = 1000;
-    	var real_speed = 1;
+    var speed = 1000;
+    var real_speed = 1;
 
-	    window.setInterval(loop, 10);
-	    var time;
+    window.setInterval(loop, 10);
+    var time;
 
-	    function loop () {
-			time = new Date().getTime();
+    function loop () {
+    time = new Date().getTime();
 
-	    	var baseFrequency = yPercent * speed;
-	    	var timeProportion = (time%speed)/speed;
-	    	// var timeRange = timeProportion - 0.5;
-	    	real_speed = xPercent*2;
+      var baseFrequency = yPercent * speed;
+      var timeProportion = (time%speed)/speed;
+      // var timeRange = timeProportion - 0.5;
+      real_speed = xPercent*2;
 
 
-	    	var timeRange = Math.sin(timeProportion*Math.PI*2*real_speed);
-	    	var timeFrequency = xPercent * ((speed/2)*timeRange);
+      var timeRange = Math.sin(timeProportion*Math.PI*2*real_speed);
+      var timeFrequency = xPercent * ((speed/2)*timeRange);
 
-	    	var freq = baseFrequency + timeFrequency;
-			oscillator.frequency.value = baseFrequency + timeFrequency;
+      var freq = baseFrequency + timeFrequency;
+    oscillator.frequency.value = baseFrequency + timeFrequency;
 
-			var hue = yPercent*360;
-			var lightness = xPercent*(timeRange*30)+50;
-			$('body').css('background-color', 'hsl('+hue+',65%,'+lightness+'%)');
-	    }
+    var hue = yPercent*360;
+    var lightness = xPercent*(timeRange*30)+50;
+    $('body').css('background-color', 'hsl('+hue+',65%,'+lightness+'%)');
+    }
 
-	    window.onmousemove = function(event) {
-	    	yPercent = event.clientY/windowHeight;
-	    	xPercent = event.clientX/windowWidth;
-		}
-	});
+    window.onmousemove = function(event) {
+      yPercent = event.clientY/windowHeight;
+      xPercent = event.clientX/windowWidth;
+    }
+  });
 
-	</script>
+  </script>
 </body>
 </html>
